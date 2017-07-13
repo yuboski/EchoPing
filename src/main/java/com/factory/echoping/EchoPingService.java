@@ -1,9 +1,6 @@
 package com.factory.echoping;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,14 +14,20 @@ import java.util.Collection;
 @Consumes({ "application/json" })
 @Produces({ "application/json" })
 public class EchoPingService {
-    @GET
+
+    @POST
     @Path("/info")
-    public Collection<EchoInfo> getInfo() {
+    public Collection<EchoInfo> getInfo(EchoInfoArgument argument) {
         ArrayList<EchoInfo> infos = new ArrayList<EchoInfo>();
         FolderScanner folderScanner = new FolderScanner();
         infos.add(new EchoInfo("home folder", Arrays.asList(folderScanner.getHomeFolder())));
-        infos.addAll(folderScanner.getDeploymentsList());
-        infos.addAll(folderScanner.getDependenciesList());
+        infos.addAll(folderScanner.getDeploymentsList(argument));
+        infos.addAll(folderScanner.getDependenciesList(argument));
         return infos;
+    }
+    @GET
+    @Path("/info")
+    public Collection<EchoInfo> getInfo() {
+        return getInfo(null);
     }
 }
